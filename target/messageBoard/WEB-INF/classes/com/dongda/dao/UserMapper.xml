@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dongda.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.dongda.entity.User" >
+    <constructor >
+      <idArg column="user_id" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="user_tx" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="user_nick" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="user_province" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="user_city" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="user_gender" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="user_age" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    user_id, user_tx, user_nick, user_province, user_city, user_gender, user_age
+  </sql>
+
+  <select id="queryAllUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from users
+  </select>
+
+  <!--  查找附近人 -->
+  <!--
+  <select id="getUserListByDistance" resultMap="BaseResultMap" parameterType="com.dongda.entity.Location">
+      SELECT msbd_id,
+        ROUND
+        (
+            6378.138*2*
+            ASIN(
+                    SQRT
+                    (
+                        POW(SIN((123.99999*PI()/180-latitude*PI()/180)/2),2)
+                        +
+                        COS(123.99999*PI()/180)
+                        *
+                        COS(latitude*PI()/180)
+                        *
+                        POW(SIN((11.99999*PI()/180-longitude*PI()/180)/2),2)
+                    )
+                )*1000
+        )
+        AS juli
+      FROM messboard having juli > 0
+      ORDER BY juli asc
+      LIMIT 100
+  </select>
+  -->
+
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dongda.entity.UserExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from users
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from users
+    where user_id = #{userId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from users
+    where user_id = #{userId,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.dongda.entity.UserExample" >
+    delete from users
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.dongda.entity.User" >
+    insert into users (user_id, user_tx, user_nick, 
+      user_province, user_city, user_gender, 
+      user_age)
+    values (#{userId,jdbcType=CHAR}, #{userTx,jdbcType=CHAR}, #{userNick,jdbcType=CHAR}, 
+      #{userProvince,jdbcType=CHAR}, #{userCity,jdbcType=CHAR}, #{userGender,jdbcType=INTEGER}, 
+      #{userAge,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongda.entity.User" >
+    insert into users
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userTx != null" >
+        user_tx,
+      </if>
+      <if test="userNick != null" >
+        user_nick,
+      </if>
+      <if test="userProvince != null" >
+        user_province,
+      </if>
+      <if test="userCity != null" >
+        user_city,
+      </if>
+      <if test="userGender != null" >
+        user_gender,
+      </if>
+      <if test="userAge != null" >
+        user_age,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=CHAR},
+      </if>
+      <if test="userTx != null" >
+        #{userTx,jdbcType=CHAR},
+      </if>
+      <if test="userNick != null" >
+        #{userNick,jdbcType=CHAR},
+      </if>
+      <if test="userProvince != null" >
+        #{userProvince,jdbcType=CHAR},
+      </if>
+      <if test="userCity != null" >
+        #{userCity,jdbcType=CHAR},
+      </if>
+      <if test="userGender != null" >
+        #{userGender,jdbcType=INTEGER},
+      </if>
+      <if test="userAge != null" >
+        #{userAge,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dongda.entity.UserExample" resultType="java.lang.Integer" >
+    select count(*) from users
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update users
+    <set >
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=CHAR},
+      </if>
+      <if test="record.userTx != null" >
+        user_tx = #{record.userTx,jdbcType=CHAR},
+      </if>
+      <if test="record.userNick != null" >
+        user_nick = #{record.userNick,jdbcType=CHAR},
+      </if>
+      <if test="record.userProvince != null" >
+        user_province = #{record.userProvince,jdbcType=CHAR},
+      </if>
+      <if test="record.userCity != null" >
+        user_city = #{record.userCity,jdbcType=CHAR},
+      </if>
+      <if test="record.userGender != null" >
+        user_gender = #{record.userGender,jdbcType=INTEGER},
+      </if>
+      <if test="record.userAge != null" >
+        user_age = #{record.userAge,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update users
+    set user_id = #{record.userId,jdbcType=CHAR},
+      user_tx = #{record.userTx,jdbcType=CHAR},
+      user_nick = #{record.userNick,jdbcType=CHAR},
+      user_province = #{record.userProvince,jdbcType=CHAR},
+      user_city = #{record.userCity,jdbcType=CHAR},
+      user_gender = #{record.userGender,jdbcType=INTEGER},
+      user_age = #{record.userAge,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongda.entity.User" >
+    update users
+    <set >
+      <if test="userTx != null" >
+        user_tx = #{userTx,jdbcType=CHAR},
+      </if>
+      <if test="userNick != null" >
+        user_nick = #{userNick,jdbcType=CHAR},
+      </if>
+      <if test="userProvince != null" >
+        user_province = #{userProvince,jdbcType=CHAR},
+      </if>
+      <if test="userCity != null" >
+        user_city = #{userCity,jdbcType=CHAR},
+      </if>
+      <if test="userGender != null" >
+        user_gender = #{userGender,jdbcType=INTEGER},
+      </if>
+      <if test="userAge != null" >
+        user_age = #{userAge,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongda.entity.User" >
+    update users
+    set user_tx = #{userTx,jdbcType=CHAR},
+      user_nick = #{userNick,jdbcType=CHAR},
+      user_province = #{userProvince,jdbcType=CHAR},
+      user_city = #{userCity,jdbcType=CHAR},
+      user_gender = #{userGender,jdbcType=INTEGER},
+      user_age = #{userAge,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=CHAR}
+  </update>
+</mapper>

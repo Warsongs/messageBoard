@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dongda.dao.MessBoardMapper" >
+  <resultMap id="BaseResultMap" type="com.dongda.entity.MessBoard" >
+    <constructor >
+      <idArg column="msbd_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="msbd_name" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="msbd_intro" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="createtime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="msbd_bg_index" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="msbd_bg" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="msbd_type" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="longitude" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="latitude" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    msbd_id, msbd_name, msbd_intro, createtime, msbd_bg_index, msbd_bg, msbd_type, longitude, 
+    latitude
+  </sql>
+
+  <!-- 查询全部的留言墙 -->
+  <select id="queryAllMessBoard" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from messboard
+  </select>
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dongda.entity.MessBoardExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from messboard
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from messboard
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from messboard
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.dongda.entity.MessBoardExample" >
+    delete from messboard
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.dongda.entity.MessBoard" >
+    insert into messboard (msbd_id, msbd_name, msbd_intro, 
+      createtime, msbd_bg_index, msbd_bg, 
+      msbd_type, longitude, latitude
+      )
+    values (#{msbdId,jdbcType=INTEGER}, #{msbdName,jdbcType=CHAR}, #{msbdIntro,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{msbdBgIndex,jdbcType=INTEGER}, #{msbdBg,jdbcType=CHAR}, 
+      #{msbdType,jdbcType=INTEGER}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongda.entity.MessBoard" >
+    insert into messboard
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="msbdId != null" >
+        msbd_id,
+      </if>
+      <if test="msbdName != null" >
+        msbd_name,
+      </if>
+      <if test="msbdIntro != null" >
+        msbd_intro,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="msbdBgIndex != null" >
+        msbd_bg_index,
+      </if>
+      <if test="msbdBg != null" >
+        msbd_bg,
+      </if>
+      <if test="msbdType != null" >
+        msbd_type,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="msbdId != null" >
+        #{msbdId,jdbcType=INTEGER},
+      </if>
+      <if test="msbdName != null" >
+        #{msbdName,jdbcType=CHAR},
+      </if>
+      <if test="msbdIntro != null" >
+        #{msbdIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msbdBgIndex != null" >
+        #{msbdBgIndex,jdbcType=INTEGER},
+      </if>
+      <if test="msbdBg != null" >
+        #{msbdBg,jdbcType=CHAR},
+      </if>
+      <if test="msbdType != null" >
+        #{msbdType,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dongda.entity.MessBoardExample" resultType="java.lang.Integer" >
+    select count(*) from messboard
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update messboard
+    <set >
+      <if test="record.msbdId != null" >
+        msbd_id = #{record.msbdId,jdbcType=INTEGER},
+      </if>
+      <if test="record.msbdName != null" >
+        msbd_name = #{record.msbdName,jdbcType=CHAR},
+      </if>
+      <if test="record.msbdIntro != null" >
+        msbd_intro = #{record.msbdIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createtime != null" >
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.msbdBgIndex != null" >
+        msbd_bg_index = #{record.msbdBgIndex,jdbcType=INTEGER},
+      </if>
+      <if test="record.msbdBg != null" >
+        msbd_bg = #{record.msbdBg,jdbcType=CHAR},
+      </if>
+      <if test="record.msbdType != null" >
+        msbd_type = #{record.msbdType,jdbcType=INTEGER},
+      </if>
+      <if test="record.longitude != null" >
+        longitude = #{record.longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.latitude != null" >
+        latitude = #{record.latitude,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update messboard
+    set msbd_id = #{record.msbdId,jdbcType=INTEGER},
+      msbd_name = #{record.msbdName,jdbcType=CHAR},
+      msbd_intro = #{record.msbdIntro,jdbcType=VARCHAR},
+      createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      msbd_bg_index = #{record.msbdBgIndex,jdbcType=INTEGER},
+      msbd_bg = #{record.msbdBg,jdbcType=CHAR},
+      msbd_type = #{record.msbdType,jdbcType=INTEGER},
+      longitude = #{record.longitude,jdbcType=DECIMAL},
+      latitude = #{record.latitude,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongda.entity.MessBoard" >
+    update messboard
+    <set >
+      <if test="msbdName != null" >
+        msbd_name = #{msbdName,jdbcType=CHAR},
+      </if>
+      <if test="msbdIntro != null" >
+        msbd_intro = #{msbdIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msbdBgIndex != null" >
+        msbd_bg_index = #{msbdBgIndex,jdbcType=INTEGER},
+      </if>
+      <if test="msbdBg != null" >
+        msbd_bg = #{msbdBg,jdbcType=CHAR},
+      </if>
+      <if test="msbdType != null" >
+        msbd_type = #{msbdType,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongda.entity.MessBoard" >
+    update messboard
+    set msbd_name = #{msbdName,jdbcType=CHAR},
+      msbd_intro = #{msbdIntro,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      msbd_bg_index = #{msbdBgIndex,jdbcType=INTEGER},
+      msbd_bg = #{msbdBg,jdbcType=CHAR},
+      msbd_type = #{msbdType,jdbcType=INTEGER},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL}
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+  </update>
+</mapper>

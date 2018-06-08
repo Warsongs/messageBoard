@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dongda.dao.DiaryMapper" >
+  <resultMap id="BaseResultMap" type="com.dongda.entity.Diary" >
+    <constructor >
+      <idArg column="user_id" jdbcType="CHAR" javaType="java.lang.String" />
+      <idArg column="diary_stamp" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="title" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="image" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="longitude" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="latitude" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="mood" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="weather" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.dongda.entity.Diary" >
+    <constructor >
+      <idArg column="user_id" jdbcType="CHAR" javaType="java.lang.String" />
+      <idArg column="diary_stamp" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="title" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="image" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="longitude" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="latitude" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="mood" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="weather" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="content" jdbcType="LONGVARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    user_id, diary_stamp, title, image, longitude, latitude, mood, weather
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.dongda.entity.DiaryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from diarys
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dongda.entity.DiaryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from diarys
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <!-- 根据Id和时间戳来查询日记列表 -->
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="com.dongda.entity.Diary" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from diarys
+    where user_id = #{userId,jdbcType=CHAR}
+
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="com.dongda.entity.DiaryKey" >
+    delete from diarys
+    where user_id = #{userId,jdbcType=CHAR}
+      and diary_stamp = #{diaryStamp,jdbcType=TIMESTAMP}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.dongda.entity.DiaryExample" >
+    delete from diarys
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+
+  <!-- 根据日期查找日记 -->
+  <select id="getDiaryByDate" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from diarys
+    where  date_format(diary_stamp, '%Y-%m-%d')= #{date,jdbcType=CHAR}
+  </select>
+
+
+  <!-- 插入一条日记记录，没有插入时间字段，时间字段为数据库自动自动生成的时间戳 -->
+  <insert id="insert" parameterType="com.dongda.entity.Diary" >
+    insert into diarys (user_id, title,
+      image, longitude, latitude, 
+      mood, weather, content
+      )
+    values (#{userId,jdbcType=CHAR}, #{title,jdbcType=CHAR},
+      #{image,jdbcType=CHAR}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, 
+      #{mood,jdbcType=INTEGER}, #{weather,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongda.entity.Diary" >
+    insert into diarys
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="diaryStamp != null" >
+        diary_stamp,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+      <if test="mood != null" >
+        mood,
+      </if>
+      <if test="weather != null" >
+        weather,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=CHAR},
+      </if>
+      <if test="diaryStamp != null" >
+        #{diaryStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=CHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=CHAR},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="mood != null" >
+        #{mood,jdbcType=INTEGER},
+      </if>
+      <if test="weather != null" >
+        #{weather,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dongda.entity.DiaryExample" resultType="java.lang.Integer" >
+    select count(*) from diarys
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update diarys
+    <set >
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=CHAR},
+      </if>
+      <if test="record.diaryStamp != null" >
+        diary_stamp = #{record.diaryStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.title != null" >
+        title = #{record.title,jdbcType=CHAR},
+      </if>
+      <if test="record.image != null" >
+        image = #{record.image,jdbcType=CHAR},
+      </if>
+      <if test="record.longitude != null" >
+        longitude = #{record.longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.latitude != null" >
+        latitude = #{record.latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.mood != null" >
+        mood = #{record.mood,jdbcType=INTEGER},
+      </if>
+      <if test="record.weather != null" >
+        weather = #{record.weather,jdbcType=INTEGER},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update diarys
+    set user_id = #{record.userId,jdbcType=CHAR},
+      diary_stamp = #{record.diaryStamp,jdbcType=TIMESTAMP},
+      title = #{record.title,jdbcType=CHAR},
+      image = #{record.image,jdbcType=CHAR},
+      longitude = #{record.longitude,jdbcType=DECIMAL},
+      latitude = #{record.latitude,jdbcType=DECIMAL},
+      mood = #{record.mood,jdbcType=INTEGER},
+      weather = #{record.weather,jdbcType=INTEGER},
+      content = #{record.content,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update diarys
+    set user_id = #{record.userId,jdbcType=CHAR},
+      diary_stamp = #{record.diaryStamp,jdbcType=TIMESTAMP},
+      title = #{record.title,jdbcType=CHAR},
+      image = #{record.image,jdbcType=CHAR},
+      longitude = #{record.longitude,jdbcType=DECIMAL},
+      latitude = #{record.latitude,jdbcType=DECIMAL},
+      mood = #{record.mood,jdbcType=INTEGER},
+      weather = #{record.weather,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongda.entity.Diary" >
+    update diarys
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=CHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=CHAR},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="mood != null" >
+        mood = #{mood,jdbcType=INTEGER},
+      </if>
+      <if test="weather != null" >
+        weather = #{weather,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=CHAR}
+      and diary_stamp = #{diaryStamp,jdbcType=TIMESTAMP}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.dongda.entity.Diary" >
+    update diarys
+    set title = #{title,jdbcType=CHAR},
+      image = #{image,jdbcType=CHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      mood = #{mood,jdbcType=INTEGER},
+      weather = #{weather,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where user_id = #{userId,jdbcType=CHAR}
+      and diary_stamp = #{diaryStamp,jdbcType=TIMESTAMP}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongda.entity.Diary" >
+    update diarys
+    set title = #{title,jdbcType=CHAR},
+      image = #{image,jdbcType=CHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      mood = #{mood,jdbcType=INTEGER},
+      weather = #{weather,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=CHAR}
+      and diary_stamp = #{diaryStamp,jdbcType=TIMESTAMP}
+  </update>
+</mapper>

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dongda.dao.TagMapper" >
+  <resultMap id="BaseResultMap" type="com.dongda.entity.Tag" >
+    <constructor >
+      <idArg column="msbd_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <idArg column="user_id" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="createtime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="watchNum" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="likeNum" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="tag_bg" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="tag_title" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="tag_image" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="anno" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.dongda.entity.Tag" >
+    <constructor >
+      <idArg column="msbd_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <idArg column="user_id" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="createtime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="watchNum" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="likeNum" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="tag_bg" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="tag_title" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="tag_image" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="anno" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="tag_content" jdbcType="LONGVARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    msbd_id, user_id, createtime, watchNum, likeNum, tag_bg, tag_title, tag_image, anno
+  </sql>
+
+  <sql id="Base_Column_List_withoutCreatetime" >
+    msbd_id, user_id, watchNum, likeNum, tag_bg, tag_title, tag_image, anno
+  </sql>
+
+  <sql id="Blob_Column_List" >
+    tag_content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.dongda.entity.TagExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tags
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dongda.entity.TagExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tags
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="com.dongda.entity.TagKey" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tags
+    <choose>
+      <when test="msbdId != null and userId != null">
+        where msbd_id = #{msbdId,jdbcType=INTEGER}
+        and user_id = #{userId,jdbcType=CHAR}
+      </when>
+      <when test="userId != null">
+        where user_id = #{userId,jdbcType=CHAR}
+      </when>
+      <otherwise>
+        where msbd_id = #{msbdId,jdbcType=INTEGER}
+      </otherwise>
+    </choose>
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="com.dongda.entity.TagKey" >
+    delete from tags
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+      and user_id = #{userId,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.dongda.entity.TagExample" >
+    delete from tags
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+  <!-- 插入一条贴纸记录，没有插入时间字段，时间字段为数据库自动自动生成的时间戳 -->
+  <insert id="insert" parameterType="com.dongda.entity.Tag" >
+    insert into tags (msbd_id, user_id,
+      watchNum, likeNum, tag_bg, 
+      tag_title, tag_image, anno, 
+      tag_content)
+    values (#{msbdId,jdbcType=INTEGER}, #{userId,jdbcType=CHAR},
+      #{watchnum,jdbcType=INTEGER}, #{likenum,jdbcType=INTEGER}, #{tagBg,jdbcType=CHAR},
+      #{tagTitle,jdbcType=CHAR}, #{tagImage,jdbcType=CHAR}, #{anno,jdbcType=INTEGER}, 
+      #{tagContent,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.dongda.entity.Tag" >
+    insert into tags
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="msbdId != null" >
+        msbd_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="watchnum != null" >
+        watchNum,
+      </if>
+      <if test="likenum != null" >
+        likeNum,
+      </if>
+      <if test="tagBg != null" >
+        tag_bg,
+      </if>
+      <if test="tagTitle != null" >
+        tag_title,
+      </if>
+      <if test="tagImage != null" >
+        tag_image,
+      </if>
+      <if test="anno != null" >
+        anno,
+      </if>
+      <if test="tagContent != null" >
+        tag_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="msbdId != null" >
+        #{msbdId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="watchnum != null" >
+        #{watchnum,jdbcType=INTEGER},
+      </if>
+      <if test="likenum != null" >
+        #{likenum,jdbcType=INTEGER},
+      </if>
+      <if test="tagBg != null" >
+        #{tagBg,jdbcType=CHAR},
+      </if>
+      <if test="tagTitle != null" >
+        #{tagTitle,jdbcType=CHAR},
+      </if>
+      <if test="tagImage != null" >
+        #{tagImage,jdbcType=CHAR},
+      </if>
+      <if test="anno != null" >
+        #{anno,jdbcType=INTEGER},
+      </if>
+      <if test="tagContent != null" >
+        #{tagContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dongda.entity.TagExample" resultType="java.lang.Integer" >
+    select count(*) from tags
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tags
+    <set >
+      <if test="record.msbdId != null" >
+        msbd_id = #{record.msbdId,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=CHAR},
+      </if>
+      <if test="record.createtime != null" >
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.watchnum != null" >
+        watchNum = #{record.watchnum,jdbcType=INTEGER},
+      </if>
+      <if test="record.likenum != null" >
+        likeNum = #{record.likenum,jdbcType=INTEGER},
+      </if>
+      <if test="record.tagBg != null" >
+        tag_bg = #{record.tagBg,jdbcType=CHAR},
+      </if>
+      <if test="record.tagTitle != null" >
+        tag_title = #{record.tagTitle,jdbcType=CHAR},
+      </if>
+      <if test="record.tagImage != null" >
+        tag_image = #{record.tagImage,jdbcType=CHAR},
+      </if>
+      <if test="record.anno != null" >
+        anno = #{record.anno,jdbcType=INTEGER},
+      </if>
+      <if test="record.tagContent != null" >
+        tag_content = #{record.tagContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update tags
+    set msbd_id = #{record.msbdId,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=CHAR},
+      createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      watchNum = #{record.watchnum,jdbcType=INTEGER},
+      likeNum = #{record.likenum,jdbcType=INTEGER},
+      tag_bg = #{record.tagBg,jdbcType=CHAR},
+      tag_title = #{record.tagTitle,jdbcType=CHAR},
+      tag_image = #{record.tagImage,jdbcType=CHAR},
+      anno = #{record.anno,jdbcType=INTEGER},
+      tag_content = #{record.tagContent,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tags
+    set msbd_id = #{record.msbdId,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=CHAR},
+      createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      watchNum = #{record.watchnum,jdbcType=INTEGER},
+      likeNum = #{record.likenum,jdbcType=INTEGER},
+      tag_bg = #{record.tagBg,jdbcType=CHAR},
+      tag_title = #{record.tagTitle,jdbcType=CHAR},
+      tag_image = #{record.tagImage,jdbcType=CHAR},
+      anno = #{record.anno,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongda.entity.Tag" >
+    update tags
+    <set >
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="watchnum != null" >
+        watchNum = #{watchnum,jdbcType=INTEGER},
+      </if>
+      <if test="likenum != null" >
+        likeNum = #{likenum,jdbcType=INTEGER},
+      </if>
+      <if test="tagBg != null" >
+        tag_bg = #{tagBg,jdbcType=CHAR},
+      </if>
+      <if test="tagTitle != null" >
+        tag_title = #{tagTitle,jdbcType=CHAR},
+      </if>
+      <if test="tagImage != null" >
+        tag_image = #{tagImage,jdbcType=CHAR},
+      </if>
+      <if test="anno != null" >
+        anno = #{anno,jdbcType=INTEGER},
+      </if>
+      <if test="tagContent != null" >
+        tag_content = #{tagContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+      and user_id = #{userId,jdbcType=CHAR}
+  </update>
+
+
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.dongda.entity.Tag" >
+    update tags
+    set createtime = #{createtime,jdbcType=TIMESTAMP},
+      watchNum = #{watchnum,jdbcType=INTEGER},
+      likeNum = #{likenum,jdbcType=INTEGER},
+      tag_bg = #{tagBg,jdbcType=CHAR},
+      tag_title = #{tagTitle,jdbcType=CHAR},
+      tag_image = #{tagImage,jdbcType=CHAR},
+      anno = #{anno,jdbcType=INTEGER},
+      tag_content = #{tagContent,jdbcType=LONGVARCHAR}
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+      and user_id = #{userId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongda.entity.Tag" >
+    update tags
+    set createtime = #{createtime,jdbcType=TIMESTAMP},
+      watchNum = #{watchnum,jdbcType=INTEGER},
+      likeNum = #{likenum,jdbcType=INTEGER},
+      tag_bg = #{tagBg,jdbcType=CHAR},
+      tag_title = #{tagTitle,jdbcType=CHAR},
+      tag_image = #{tagImage,jdbcType=CHAR},
+      anno = #{anno,jdbcType=INTEGER}
+    where msbd_id = #{msbdId,jdbcType=INTEGER}
+      and user_id = #{userId,jdbcType=CHAR}
+  </update>
+</mapper>
